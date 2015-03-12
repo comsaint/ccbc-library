@@ -46,7 +46,7 @@ class BookRecord(models.Model):
 class Borrower(models.Model):
     name = models.CharField(max_length=128)
     phone = models.CharField(max_length=10)
-    email = models.EmailField()
+    email = models.EmailField(null=True) #some do not have/use email
     cellgroup = models.CharField(max_length=128)
     IDLE = 'I'
     BORROWING = 'B'
@@ -82,6 +82,7 @@ class Transaction(models.Model):
     borrow_manager = models.CharField(max_length=32,default='CCBC')
     due_date = models.DateField(null=False)
     renew_date = models.DateField(null=True)
+    renew_manager = models.CharField(max_length=32,default='')
     return_date = models.DateField(null=True)
     return_manager = models.CharField(max_length=32,default='')
     
