@@ -30,3 +30,4 @@ BORROWER_STATUS_CHOICE=(
                         (BORROWING,'Borrowing'),
                         (OVERDUING,'Overduing'),
                         )
+

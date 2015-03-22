@@ -17,12 +17,12 @@ class BorrowerAdmin(admin.ModelAdmin):
     
 class TransactionAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,               {'fields': ['id','book','borrower']}),
+        (None,               {'fields': ['book','borrower']}),
         ('Borrow Details',   {'fields': ['borrow_date','borrow_manager']}),
         ('Renew Details',    {'fields': ['renew_date','renew_manager']}),
         ('Return Details',   {'fields': ['return_date','return_manager']}),
     ]
-    list_display = ('book','borrower','borrow_date','renew_date','return_date','borrow_manager','renew_manager','return_manager','cal_due_date','is_overdue')
+    list_display = ('idTransaction','book','borrower','borrow_date','renew_date','return_date','borrow_manager','renew_manager','return_manager','cal_due_date','is_overdue')
     list_filter = ['borrow_date']
 
 admin.site.register(Book, BookAdmin)

@@ -6,6 +6,11 @@ urlpatterns = patterns('',
         url(r'^$', views.index, name='index'),
         url(r'^about/$',views.about, name='about'),
         url(r'^home/$',views.home, name='home'),
+        url(r'^borrow/$',views.bookborrow,name='borrow'),
+        url(r'^return/$',views.bookreturn,name='return'),
+        url(r'^renew/$',views.bookrenew,name='renew'),
+        url(r'^success/$',views.success,name='success'),
+        #url(r'^return/(?P<idTransaction>\d+)/$',views.bookreturn,name='return'),
         )
 
 urlpatterns += staticfiles_urlpatterns()

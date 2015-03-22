@@ -4,17 +4,31 @@ import datetime
 #from datetime import date
 
 from ccbclib.constants import RENEW_DURATION, BORROW_DURATION, BOOK_STATUS_CHOICE, BORROWER_STATUS_CHOICE
+from django.db.models.fields import AutoField
 
 # Create your models here.
 class Book(models.Model):
+    idbook = models.AutoField(primary_key=True)
     name = models.CharField(max_length=128) #name or title of the book
-    code = models.CharField(max_length=10, unique=True) #id code of the book. Normally in format ccdddd
+    code = models.CharField(max_length=10) #id code of the book. Normally in format ccdddd
     area = models.CharField(max_length=32) #perhaps we can get this via the first 2 char of the 'code' field?
     status = models.CharField(max_length=2,
                               choices=BOOK_STATUS_CHOICE,
                               default='OS')
     #times_borrowed = models.PositiveIntegerField(default=0)
     #times_overdued = models.PositiveIntegerField(default=0)
+    
+    def get_language(self):
+        """
+        Get the language of a book via 2nd field of the code.
+        """
+        lang_field = self.code[1]
+        if lang_field == 'C':
+            return 'chinese'
+        elif lang_field == 'E':
+            return 'english'
+        else:
+            return 'unknown'
         
     def is_overdued(self):
         """
@@ -26,6 +40,7 @@ class Book(models.Model):
         return self.name
 
 class Borrower(models.Model):
+    idborrower = AutoField(primary_key=True)
     name = models.CharField(max_length=128)
     phone = models.CharField(max_length=10)
     email = models.EmailField(null=True,blank=True,default='no_email@no_email.com') #some do not have/use email
@@ -38,6 +53,7 @@ class Borrower(models.Model):
         return self.name
 
 class Transaction(models.Model):
+    idTransaction = AutoField(primary_key=True)
     book = models.ForeignKey('Book',related_name='book')
     borrower = models.ForeignKey('Borrower',related_name='borrower')
     borrow_date = models.DateField()
@@ -62,4 +78,4 @@ class Transaction(models.Model):
     is_overdue.short_description = 'Is it overdue?'
     
     def __str__(self):
-        return self.book.name
+        return ','.join([self.book.name,self.borrower.name,str(self.borrow_date)])

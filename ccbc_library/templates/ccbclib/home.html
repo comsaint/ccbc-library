@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Home{% endblock %}
+
+{% block body_block %}
+    <div class="page-header">
+                <h1>Welcome to CCBC Library!</h1><br />
+                <h3>I want to ...</h3>
+    </div>
+            <div>
+            <li><a href="{% url 'ccbclib:borrow'%}"> Borrow a book </a></li><br />
+            <li><a href="{% url 'ccbclib:renew'%}"> Renew a book </a></li><br />
+            <li><a href="{% url 'ccbclib:return'%}"> Return a book </a></li><br />
+            </div>
+{% endblock %}
