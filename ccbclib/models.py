@@ -3,7 +3,7 @@ from django.db import models
 import datetime
 #from datetime import date
 
-from ccbclib.constants import RENEW_DURATION, BORROW_DURATION, BOOK_STATUS_CHOICE, BORROWER_STATUS_CHOICE
+from ccbclib.constants import RENEW_DURATION, BORROW_DURATION, BORROWER_STATUS_CHOICE
 from django.db.models.fields import AutoField
 
 # Create your models here.
@@ -12,9 +12,7 @@ class Book(models.Model):
     name = models.CharField(max_length=128) #name or title of the book
     code = models.CharField(max_length=10) #id code of the book. Normally in format ccdddd
     area = models.CharField(max_length=32) #perhaps we can get this via the first 2 char of the 'code' field?
-    status = models.CharField(max_length=2,
-                              choices=BOOK_STATUS_CHOICE,
-                              default='OS')
+    statusflag = models.CharField(max_length=16,choices=(('NM','Normal'),('SP','Special')),default='NM')#this should only be changed in admin view
     #times_borrowed = models.PositiveIntegerField(default=0)
     #times_overdued = models.PositiveIntegerField(default=0)
     
@@ -30,11 +28,19 @@ class Book(models.Model):
         else:
             return 'unknown'
         
-    def is_overdued(self):
+    def get_book_status(self):
         """
-        Check if a book is borrowed.
+        Get the status of a book.
         """
-        return self.status in (self.OVERDUED)
+        if self.statusflag == 'NM': # is the book in normal status (not lost/reserved etc.)
+            q = Transaction.objects.filter(book = self,return_date = None) #is this book currently borrowed?
+            if q.exists():
+                return 'Borrowed'
+            else:
+                return 'Onshelf'
+        else:
+            return 'Reserved'
+    get_book_status.short_description = 'Status'
     
     def __str__(self):
         return self.name
@@ -45,9 +51,24 @@ class Borrower(models.Model):
     phone = models.CharField(max_length=10)
     email = models.EmailField(null=True,blank=True,default='no_email@no_email.com') #some do not have/use email
     cellgroup = models.CharField(max_length=128)
-    status = models.CharField(max_length=1,
-                              choices=BORROWER_STATUS_CHOICE,
-                              default='I')
+    statusflag = models.CharField(max_length=16,choices=(('NM','Normal'),('SP','Special')),default='NM')#this should only be changed in admin view
+    
+    def get_borrower_status(self):
+        """
+        Get status of a borrower.
+        """
+        if self.statusflag == 'NM': # is the book in normal status (not lost/reserved etc.)
+            q = Transaction.objects.filter(borrower = self,return_date = None).order_by('-borrow_date') #is this user currently borrowing a book?
+            if q.exists():
+                if q[0].is_overdue:
+                    return 'Overdue'
+                else:
+                    return 'Borrowing'
+            else:
+                return 'Idle'
+        else:
+            return 'Reserved'
+    get_borrower_status.short_description='Status'
     
     def __str__(self):
         return self.name
@@ -64,7 +85,9 @@ class Transaction(models.Model):
     return_manager = models.CharField(max_length=32,null=True,blank=True,default=None)
     
     def cal_due_date(self):
-    # Returns the due date of a book.
+        """
+        Returns the due date of a book.
+        """
         if self.renew_date:
             return self.renew_date + datetime.timedelta(days=RENEW_DURATION)
         else:
@@ -72,10 +95,12 @@ class Transaction(models.Model):
     cal_due_date.short_description = 'Due Date'
     
     def is_overdue(self):
-    # Returns TRUE if the book is overdue.
+        """
+        Returns TRUE if the book is overdue.
+        """
         return self.cal_due_date() < datetime.date.today()
     is_overdue.boolean = True
     is_overdue.short_description = 'Is it overdue?'
     
     def __str__(self):
-        return ','.join([self.book.name,self.borrower.name,str(self.borrow_date)])
+        return ','.join([str(self.book.idbook),self.book.name,self.borrower.name,str(self.borrow_date)])

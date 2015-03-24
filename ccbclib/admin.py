@@ -3,17 +3,17 @@ from ccbclib.models import Book, Borrower, Transaction
 
 # Register your models here.
 class BookAdmin(admin.ModelAdmin):
-    fields = ['name','code','area','status']
-    list_display = ('name','code','area','status')
+    fields = ['name','code','area']
+    list_display = ('name','code','area','statusflag','get_book_status')
     search_fields = ['name']
 
 class BorrowerAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,               {'fields': ['name','cellgroup']}),
         ('Contact Details',  {'fields': ['phone','email']}),
-        ('Status',           {'fields': ['status']}),
+        ('Status',           {'fields': ['statusflag']}),
     ]
-    list_display = ('name','cellgroup','phone','email','status')
+    list_display = ('name','cellgroup','phone','email','statusflag','get_borrower_status')
     
 class TransactionAdmin(admin.ModelAdmin):
     fieldsets = [
