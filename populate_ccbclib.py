@@ -14,9 +14,9 @@ from datetime import date
 
 def populate():
     #add books
-    book_1 = add_book('Why in Jesus', 'AA0001', 'WY', 'OS')
-    book_2 = add_book('What in Jesus', 'AS0002', 'AT', 'BR')
-    book_3 = add_book('Where is Jesus', 'HR0003', 'ER', 'OD')
+    book_1 = add_book('Why in Jesus', 'AC0001')
+    book_2 = add_book('What in Jesus', 'BC0002')
+    book_3 = add_book('Where is Jesus', 'AE0003')
     
     #add borrowers
     alice = add_borrower('Alice Ain', '0413245666', 'alice@example.com', 'K&J', 'I')
@@ -28,8 +28,8 @@ def populate():
     add_transaction(book=book_2, borrower=alice, borrow_date=date.today()-datetime.timedelta(days=13), borrow_manager='ZY', renew_date=date.today()-datetime.timedelta(days=1), renew_manager='LP')
     add_transaction(book=book_3, borrower=cathy, borrow_date=date.today()-datetime.timedelta(days=15), borrow_manager='Abby')
 
-def add_book(name, code, area, status):
-    p = Book.objects.get_or_create(name=name,code=code,area=area,status=status)[0]
+def add_book(name, code):
+    p = Book.objects.get_or_create(name=name,code=code)[0]
     p.save()
     return p
 

@@ -10,6 +10,7 @@ urlpatterns = patterns('',
         url(r'^return/$',views.bookreturn,name='return'),
         url(r'^renew/$',views.bookrenew,name='renew'),
         url(r'^success/$',views.success,name='success'),
+        url(r'^infotable/(?P<dataToDisplay>\w+)/$',views.infotable,name='infotable'),
         #url(r'^return/(?P<idTransaction>\d+)/$',views.bookreturn,name='return'),
         )
 

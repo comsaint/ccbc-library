@@ -3,7 +3,10 @@ from ccbclib.forms import BorrowForm, ReturnForm, RenewForm
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from ccbclib.models import Transaction
+from ccbclib.models import Book, Borrower, Transaction
+
+from django_tables2 import RequestConfig
+from ccbclib.tables import BookTable, BorrowerTable, TransactionTable
 
 def index(request):
     return HttpResponse("Welcome to CCBC Library!")
@@ -72,7 +75,7 @@ def bookrenew(request):
         form = RenewForm(request.POST)
         # Have we been provided with a valid form?
         if form.is_valid():
-            transaction = Transaction.objects.get(pk=form.cleaned_data['idTransaction'].idTransaction)
+            transaction = Transaction.objects.get(pk=form.cleaned_data['idtransaction'].idtransaction)
             form = RenewForm(request.POST, instance=transaction)
             form.save()
 
@@ -92,3 +95,30 @@ def bookrenew(request):
 
 def addborrower(request):
     pass
+
+def infotable(request,dataToDisplay):
+    if dataToDisplay == 'transactions':
+        table = TransactionTable(Transaction.objects.all())
+        RequestConfig(request).configure(table)
+        context_dict = {
+                   "info_title" : "Transactions",
+                   "table" : table
+                   }
+    elif dataToDisplay == 'books':
+        table = BookTable(Book.objects.all())
+        RequestConfig(request).configure(table)
+        context_dict = {
+                   "info_title": "Books",
+                   "table" : table
+                   }
+    elif dataToDisplay == 'borrowers':
+        table = BorrowerTable(Borrower.objects.all())
+        RequestConfig(request).configure(table)
+        context_dict = {
+                   "info_title": "Borrowers",
+                   "table" : table
+                   }
+    else:
+        return HttpResponse("Cannot find resources specified.")
+    
+    return render(request,"ccbclib/info_table.html",context_dict)

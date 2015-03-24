@@ -2,8 +2,8 @@
 Define constants here
 """
 # In days
-RENEW_DURATION = 14
 BORROW_DURATION = 14
+RENEW_DURATION = 14
 
 # book status
 ONSHELF = 'OS'
@@ -31,3 +31,13 @@ BORROWER_STATUS_CHOICE=(
                         (OVERDUING,'Overduing'),
                         )
 
+# book area
+BOOK_AREA = {
+        'A':'Faith',
+        'B':'Study'
+        }
+# book language
+BOOK_LANG = {
+             'C':'Chinese',
+             'E':'English'
+             }

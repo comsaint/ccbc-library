@@ -12,16 +12,16 @@ class BorrowForm(forms.ModelForm):
     class Meta:
         model = Transaction
         fields = ('book','borrower','borrow_date','borrow_manager',)
-        #exclude =('idTransaction','renew_date','renew_manager','return_date','return_manager',)
+        #exclude =('idtransaction','renew_date','renew_manager','return_date','return_manager',)
 
 class RenewForm(forms.ModelForm):
-    idTransaction = forms.ModelChoiceField(queryset = Transaction.objects.filter(renew_date__isnull = True, return_date__isnull = True),help_text='Transaction')
+    idtransaction = forms.ModelChoiceField(queryset = Transaction.objects.filter(renew_date__isnull = True, return_date__isnull = True),help_text='Transaction')
     renew_date = forms.DateField(required=True,initial=datetime.date.today(),widget=SelectDateWidget(),help_text='Renew Date')
     renew_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
     
     class Meta:
         model = Transaction
-        fields = ('idTransaction','renew_date','renew_manager',)
+        fields = ('idtransaction','renew_date','renew_manager',)
         #exclude = ('book','borrower','borrow_date','borrow_manager','return_date','return_manager',)
         
 class ReturnForm(forms.ModelForm):
@@ -31,5 +31,5 @@ class ReturnForm(forms.ModelForm):
     
     class Meta:
         model = Transaction
-        fields = ('idTransaction','return_date','return_manager',)
+        fields = ('idtransaction','return_date','return_manager',)
         #exclude = ('book','borrower','borrow_date','borrow_manager','renew_date','renew_manager',)

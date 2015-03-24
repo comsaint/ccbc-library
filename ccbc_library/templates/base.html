@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "css/dashboard.css" %}" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 
     {% comment %}
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -67,7 +68,12 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-                {% block side_block %}{% endblock %}
+        <p>Check Records</p>
+                {% block side_block %}
+                <br /><a href=" {% url 'ccbclib:infotable' 'books'%} ">Books</a><br />
+                <br /><a href=" {% url 'ccbclib:infotable' 'borrowers'%} ">Borrowers</a><br />
+                <br /><a href=" {% url 'ccbclib:infotable' 'transactions'%} ">Transactions</a><br />
+                {% endblock %}
 
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">

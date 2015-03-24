@@ -3,8 +3,8 @@ from ccbclib.models import Book, Borrower, Transaction
 
 # Register your models here.
 class BookAdmin(admin.ModelAdmin):
-    fields = ['name','code','area']
-    list_display = ('name','code','area','statusflag','get_book_status')
+    fields = ['name','code']
+    list_display = ('name','code','statusflag','get_book_status')
     search_fields = ['name']
 
 class BorrowerAdmin(admin.ModelAdmin):
@@ -22,8 +22,8 @@ class TransactionAdmin(admin.ModelAdmin):
         ('Renew Details',    {'fields': ['renew_date','renew_manager']}),
         ('Return Details',   {'fields': ['return_date','return_manager']}),
     ]
-    list_display = ('idTransaction','book','borrower','borrow_date','renew_date','return_date','borrow_manager','renew_manager','return_manager','cal_due_date','is_overdue')
-    list_filter = ['borrow_date']
+    list_display = ('idtransaction','book','borrower','borrow_date','renew_date','return_date','borrow_manager','renew_manager','return_manager','cal_due_date','is_returned','is_overdue')
+    #list_filter = ['borrow_date']
 
 admin.site.register(Book, BookAdmin)
 admin.site.register(Borrower, BorrowerAdmin)
