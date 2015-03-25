@@ -10,9 +10,15 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+#from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-
+TEMPLATE_PATH = os.path.join(BASE_DIR, 'ccbc_library/templates')
+TEMPLATE_DIRS = (
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    TEMPLATE_PATH,
+)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -26,7 +32,6 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -36,6 +41,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ccbclib',
+    'registration',
+    'django_tables2',
+    "django_cron",
+    "post_office",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -47,6 +57,17 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+                               "django.contrib.auth.context_processors.auth",
+                               "django.core.context_processors.debug",
+                               "django.core.context_processors.i18n",
+                               "django.core.context_processors.media",
+                               "django.core.context_processors.static",
+                               "django.core.context_processors.tz",
+                               "django.contrib.messages.context_processors.messages",
+                               "django.core.context_processors.request",
+                               )
 
 ROOT_URLCONF = 'ccbc_library.urls'
 
@@ -68,7 +89,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Australia/Melbourne'
 
 USE_I18N = True
 
@@ -79,5 +100,33 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
+#STATIC_ROOT = ''
+
+STATIC_PATH = os.path.join(BASE_DIR,'ccbc_library/static')
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    STATIC_PATH,
+)
+
+# django_cron
+CRON_CLASSES = [
+    "ccbc_library.cron.MyCronJob",
+]
+"""
+#post-office
+EMAIL_BACKEND = 'post_office.EmailBackend'
+"""
+
+#django.core.mail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.environ.get('MY_GMAIL_ADDRESS','')
+EMAIL_HOST_PASSWORD = os.environ.get("MY_GMAIL_PW",'')
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
