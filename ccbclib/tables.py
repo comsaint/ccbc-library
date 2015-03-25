@@ -13,6 +13,7 @@ class BookTable(tables.Table):
 
 class BorrowerTable(tables.Table):
     idborrower = tables.Column(verbose_name="id")
+    get_borrower_status = tables.Column(verbose_name="Status")
     class Meta:
         model = Borrower
         attrs = {"class": "paleblue"}

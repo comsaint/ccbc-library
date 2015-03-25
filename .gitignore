@@ -1,6 +1,9 @@
 #My own ignores
 env/
 *.pyc
+secrets
+secrets~
+db.sqlite3
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
