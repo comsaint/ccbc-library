@@ -9,6 +9,4 @@ class MyCronJob(CronJobBase):
 
     def do(self):
         # do your thing here
-        print("!!!")
-        tasks.SendTestMail()
-        
+        tasks.SendNoticeEmail()        

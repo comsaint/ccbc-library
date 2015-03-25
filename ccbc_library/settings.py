@@ -130,3 +130,6 @@ EMAIL_HOST_USER = os.environ.get('MY_GMAIL_ADDRESS','')
 EMAIL_HOST_PASSWORD = os.environ.get("MY_GMAIL_PW",'')
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+#Admins
+ADMINS = (('Long', os.environ.get('MY_GMAIL_ADDRESS','')))

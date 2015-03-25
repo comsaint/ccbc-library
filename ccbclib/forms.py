@@ -1,11 +1,11 @@
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
-from ccbclib.models import Book,Borrower,Transaction
+from ccbclib.models import Book,Borrower,Transaction, BorrowerManager
 import datetime
 
 class BorrowForm(forms.ModelForm):
     book = forms.ModelChoiceField(queryset=Book.objects.all(),to_field_name="name",empty_label=None,required=True,help_text='Book title')
-    borrower = forms.ModelChoiceField(queryset = Borrower.objects.all(), to_field_name="name",empty_label=None,required=True,help_text="Borrower's name")
+    borrower = forms.ModelChoiceField(queryset=Borrower.active_objects.all(), to_field_name="name",empty_label=None,required=True,help_text="Borrower's name") #need to filter out currently borrowing ones...
     borrow_date = forms.DateField(required=True,initial=datetime.date.today(),help_text='Borrow date',widget=SelectDateWidget())
     borrow_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
     

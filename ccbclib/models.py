@@ -55,6 +55,13 @@ class Book(models.Model):
     def __str__(self):
         return self.name
 
+class BorrowerManager(models.Manager):
+    def get_queryset(self):
+        q = Borrower.objects.all()
+        q_ids = [o.idborrower for o in q if o.get_borrower_status()=='Idle']
+        q = q.filter(idborrower__in=q_ids)
+        return q
+
 class Borrower(models.Model):
     idborrower = AutoField(primary_key=True)
     name = models.CharField(max_length=128)
@@ -62,13 +69,15 @@ class Borrower(models.Model):
     email = models.EmailField(null=True,blank=True,default='no_email@no_email.com') #some do not have/use email
     cellgroup = models.CharField(max_length=128)
     statusflag = models.CharField(max_length=16,choices=(('NM','Normal'),('SP','Special')),default='NM')#this should only be changed in admin view
+    objects = models.Manager() # The default manager.
+    active_objects = BorrowerManager()
     
     def get_borrower_status(self):
         """
         Get status of a borrower.
         """
         if self.statusflag == 'NM': # is the book in normal status (not lost/reserved etc.)
-            q = Transaction.objects.filter(borrower = self,return_date = None).order_by('-borrow_date') #is this user currently borrowing a book?
+            q = Transaction.objects.filter(borrower = self,return_date = None) #is this user currently borrowing a book?
             if q.exists():
                 if q[0].is_overdue():
                     return 'Overdue'
@@ -104,13 +113,33 @@ class Transaction(models.Model):
             return self.borrow_date + datetime.timedelta(days=BORROW_DURATION)
     cal_due_date.short_description = 'Due Date'
     
+    def is_due_soon(self):
+        """
+        Go over all UNRETURNED transactions. See if they are to be due in 2 days. 
+        """
+        #(Not returned AND Not overdue AND due within 2 days)
+        return (self.return_date==None) and (self.cal_due_date() >= datetime.date.today()) and (self.cal_due_date() < datetime.date.today()+datetime.timedelta(days=2))
+    is_due_soon.boolean = True
+    is_due_soon.short_description = 'Will it due soon?'
+    
     def is_overdue(self):
         """
-        Returns TRUE if the book is overdue.
+        Returns TRUE if the book is overdue (now).
+        Past overdue items will return FASLE.
         """
-        return self.cal_due_date() < datetime.date.today()
+        return (self.return_date==None) and (self.cal_due_date() < datetime.date.today())
     is_overdue.boolean = True
     is_overdue.short_description = 'Is it overdue?'
+    
+    def was_overdue(self):
+        """
+        Returns TRUE if the book is/was overdue (at all times).
+        Past overdue items will return TRUE.
+        """
+        if self.return_date==None:
+            return self.cal_due_date() < datetime.date.today()
+        else:
+            return self.cal_due_date() < self.return_date
     
     def is_returned(self):
         """
