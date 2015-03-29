@@ -3,7 +3,7 @@ from django.core import mail
 from django.core.mail import EmailMessage, EmailMultiAlternatives, mail_admins
 import os
 from ccbclib.models import Book, Borrower, Transaction
-import datetime
+#import datetime
 from django.template.loader import get_template
 from django.template import Context
 

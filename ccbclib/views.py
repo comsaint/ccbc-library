@@ -2,11 +2,13 @@ from django.shortcuts import render
 from ccbclib.forms import BorrowForm, ReturnForm, RenewForm, AddBorrowerForm
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from ccbclib.models import Book, Borrower, Transaction
-
+from django.views.generic.edit import FormView, UpdateView, DeleteView,\
+    CreateView
 from django_tables2 import RequestConfig
 from ccbclib.tables import BookTable, BorrowerTable, TransactionTable
+
 
 def index(request):
     return HttpResponse("Welcome to CCBC Library!")
@@ -30,9 +32,7 @@ def bookborrow(request):
 
         # Have we been provided with a valid form?
         if form.is_valid():
-            # Save the new category to the database.
             form.save(commit=True)
-
             # Now call the index() view.
             # The user will be shown the homepage.
             return HttpResponseRedirect(reverse('ccbclib:success'))
@@ -52,7 +52,7 @@ def bookreturn(request):
         form = ReturnForm(request.POST)
         # Have we been provided with a valid form?
         if form.is_valid():
-            transaction = Transaction.objects.get(pk=form.cleaned_data['idTransaction'].idTransaction)
+            transaction = Transaction.objects.get(pk=form.cleaned_data['idtransaction'].idtransaction)
             form = ReturnForm(request.POST, instance=transaction)
             form.save()
 
@@ -109,7 +109,6 @@ def addborrower(request):
         form = AddBorrowerForm()
     return render(request, 'ccbclib/addborrower.html', {'form': form})
 
-
 def infotable(request,dataToDisplay):
     if dataToDisplay == 'transactions':
         table = TransactionTable(Transaction.objects.all())
@@ -136,3 +135,20 @@ def infotable(request,dataToDisplay):
         return HttpResponse("Cannot find resources specified.")
     
     return render(request,"ccbclib/info_table.html",context_dict)
+
+
+##django's built-in generic view.
+# CRUD for Book models
+class BookCreate(CreateView):
+    model = Book
+    fields = ['name','code']
+"""
+# We may not want to modify/delete a book in normal applications - or set higher permission for this?
+class BookUpdate(UpdateView):
+    model = Book
+    fields = ['name','code']
+
+class BookDelete(DeleteView):
+    model = Book
+    success_url = reverse_lazy('book-list')
+"""

@@ -12,7 +12,9 @@ urlpatterns = patterns('',
         url(r'^addborrower/$',views.addborrower,name='addborrower'),
         url(r'^success/$',views.success,name='success'),
         url(r'^infotable/(?P<dataToDisplay>\w+)/$',views.infotable,name='infotable'),
-        #url(r'^return/(?P<idTransaction>\d+)/$',views.bookreturn,name='return'),
+        url(r'book/add/$', views.BookCreate.as_view(),name='book_add'),
+        #url(r'book/(?P<pk>[0-9]+)/$', views.BookUpdate.as_view(),name='book_update'),
+        #url(r'book/(?P<pk>[0-9]+)/delete/$', views.BookDelete.as_view(),name='book_delete')
         )
 
 urlpatterns += staticfiles_urlpatterns()

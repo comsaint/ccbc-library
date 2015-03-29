@@ -1,7 +1,6 @@
 from django.db import models
-#from django.utils import timezone
 import datetime
-#from datetime import date
+from django.core.urlresolvers import reverse
 
 from ccbclib.constants import RENEW_DURATION, BORROW_DURATION, BOOK_AREA, BOOK_LANG
 from django.db.models.fields import AutoField
@@ -61,9 +60,16 @@ class Book(models.Model):
         return len(q)
     get_times_borrowed.short_description = 'Times Borrowed'
     
+    def get_absolute_url(self):
+        #return reverse('book-detail', kwargs={'pk':self.pk})
+        return reverse('ccbclib:success')
+    
     def __str__(self):
         return self.name
-
+    
+    class Meta:
+        ordering = ["code"]
+        
 class BorrowerManager(models.Manager):
     def get_queryset(self):
         q = Borrower.objects.all()
@@ -98,12 +104,25 @@ class Borrower(models.Model):
             return 'Reserved'
     get_borrower_status.short_description='Status'
     
+    def get_times_overdue(self):
+        q = Transaction.overdued_transactions.filter(borrower=self)
+        return len(q)
+    get_times_overdue.short_description='Times overdue'
+    
     def __str__(self):
         return self.name
     
     class Meta:
         unique_together = ('name','phone')
-    
+        ordering = ["name"]
+
+class TransactionManager(models.Manager):
+    def get_queryset(self):
+        q = Transaction.objects.all()
+        q_ids = [o.idtransaction for o in q if o.was_overdue()]
+        q = q.filter(idtransaction__in=q_ids)
+        return q
+
 class Transaction(models.Model):
     idtransaction = AutoField(primary_key=True)
     book = models.ForeignKey('Book',related_name='book')
@@ -114,6 +133,8 @@ class Transaction(models.Model):
     renew_manager = models.CharField(max_length=32,null=True,blank=True,default=None)
     return_date = models.DateField(null=True,blank=True,default=None)
     return_manager = models.CharField(max_length=32,null=True,blank=True,default=None)
+    objects = models.Manager() # The default manager.
+    overdued_transactions = TransactionManager()
     
     def cal_due_date(self):
         """
@@ -145,13 +166,15 @@ class Transaction(models.Model):
     
     def was_overdue(self):
         """
-        Returns TRUE if the book is/was overdue (at all times).
+        Returns TRUE if the book is/was overdue (for all times).
         Past overdue items will return TRUE.
         """
         if self.return_date==None:
             return self.cal_due_date() < datetime.date.today()
         else:
             return self.cal_due_date() < self.return_date
+    was_overdue.boolean = True
+    was_overdue.short_description = 'Was it overdue?'
     
     def is_returned(self):
         """
@@ -163,3 +186,6 @@ class Transaction(models.Model):
     
     def __str__(self):
         return ','.join([str(self.idtransaction),self.book.name,self.borrower.name,str(self.borrow_date)])
+    
+    class Meta:
+        ordering = ["-idtransaction"]
