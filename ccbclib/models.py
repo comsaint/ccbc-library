@@ -7,12 +7,21 @@ from ccbclib.constants import RENEW_DURATION, BORROW_DURATION, BOOK_AREA, BOOK_L
 from django.db.models.fields import AutoField
 
 # Create your models here.
+class BookManager(models.Manager):
+    def get_queryset(self):
+        q = Book.objects.all()
+        q_ids = [o.idbook for o in q if o.get_book_status()=='Onshelf']
+        q = q.filter(idbook__in=q_ids)
+        return q
+    
 class Book(models.Model):
     idbook = models.AutoField(primary_key=True)
     name = models.CharField(max_length=128) #name or title of the book
     code = models.CharField(max_length=8) #id code of the book. Normally in format ccdddd
     #area = models.CharField(max_length=32) #perhaps we can get this via the first char of the 'code' field?
     statusflag = models.CharField(max_length=16,choices=(('NM','Normal'),('SP','Special')),default='NM')#this should only be changed in admin view
+    objects = models.Manager() # The default manager.
+    onshelf_books = BookManager()
     
     def get_area(self):
         """
@@ -70,7 +79,7 @@ class Borrower(models.Model):
     cellgroup = models.CharField(max_length=128)
     statusflag = models.CharField(max_length=16,choices=(('NM','Normal'),('SP','Special')),default='NM')#this should only be changed in admin view
     objects = models.Manager() # The default manager.
-    active_objects = BorrowerManager()
+    idle_borrowers = BorrowerManager()
     
     def get_borrower_status(self):
         """
@@ -91,7 +100,10 @@ class Borrower(models.Model):
     
     def __str__(self):
         return self.name
-
+    
+    class Meta:
+        unique_together = ('name','phone')
+    
 class Transaction(models.Model):
     idtransaction = AutoField(primary_key=True)
     book = models.ForeignKey('Book',related_name='book')
@@ -115,10 +127,10 @@ class Transaction(models.Model):
     
     def is_due_soon(self):
         """
-        Go over all UNRETURNED transactions. See if they are to be due in 2 days. 
+        Go over all UNRETURNED transactions. See if they are to be due in 3 days. 
         """
-        #(Not returned AND Not overdue AND due within 2 days)
-        return (self.return_date==None) and (self.cal_due_date() >= datetime.date.today()) and (self.cal_due_date() < datetime.date.today()+datetime.timedelta(days=2))
+        #(Not returned AND Not overdue AND due within 3 days)
+        return (self.return_date==None) and (self.cal_due_date() >= datetime.date.today()) and (self.cal_due_date() < datetime.date.today()+datetime.timedelta(days=3))
     is_due_soon.boolean = True
     is_due_soon.short_description = 'Will it due soon?'
     

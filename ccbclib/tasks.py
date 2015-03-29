@@ -27,8 +27,9 @@ def SendNoticeEmail():
     
     for tran in q:
         if tran.is_overdue() or tran.is_due_soon():
-            email = EmailGen(tran)
-            email.send()
+            if tran.borrower.email != None:
+                email = EmailGen(tran)
+                email.send()
 
     connection.close() # manually close the connection
     

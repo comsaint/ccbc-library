@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from ccbclib.forms import BorrowForm, ReturnForm, RenewForm
+from ccbclib.forms import BorrowForm, ReturnForm, RenewForm, AddBorrowerForm
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -94,7 +94,20 @@ def bookrenew(request):
     return render(request, 'ccbclib/renew.html', {'form': form})
 
 def addborrower(request):
-    pass
+    # A HTTP POST?
+    if request.method == 'POST':
+        form = AddBorrowerForm(request.POST)
+        # Have we been provided with a valid form?
+        if form.is_valid():
+            form.save(commit=True)
+            return HttpResponseRedirect(reverse('ccbclib:success'))
+        else:
+            print(form.errors)
+    else:
+        # If the request was not a POST, display the form to enter details.
+        form = AddBorrowerForm()
+    return render(request, 'ccbclib/addborrower.html', {'form': form})
+
 
 def infotable(request,dataToDisplay):
     if dataToDisplay == 'transactions':
