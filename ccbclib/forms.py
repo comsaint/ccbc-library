@@ -1,11 +1,12 @@
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
+from django.core.exceptions import ValidationError
 from ccbclib.models import Book,Borrower,Transaction
 import datetime
 
 class BorrowForm(forms.ModelForm):
-    book = forms.ModelChoiceField(queryset=Book.objects.all(),to_field_name="name",empty_label=None,required=True,help_text='Book title')
-    borrower = forms.ModelChoiceField(queryset = Borrower.objects.all(), to_field_name="name",empty_label=None,required=True,help_text="Borrower's name")
+    book = forms.ModelChoiceField(queryset=Book.onshelf_books.all(),to_field_name="name",empty_label=None,required=True,help_text='Book title')
+    borrower = forms.ModelChoiceField(queryset=Borrower.idle_borrowers.all(), to_field_name="name",empty_label=None,required=True,help_text="Borrower's name") #need to filter out currently borrowing ones...
     borrow_date = forms.DateField(required=True,initial=datetime.date.today(),help_text='Borrow date',widget=SelectDateWidget())
     borrow_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
     
@@ -33,3 +34,32 @@ class ReturnForm(forms.ModelForm):
         model = Transaction
         fields = ('idtransaction','return_date','return_manager',)
         #exclude = ('book','borrower','borrow_date','borrow_manager','renew_date','renew_manager',)
+
+class AddBorrowerForm(forms.ModelForm):
+    name = forms.CharField(required=True,help_text='Name of Borrower')
+    phone = forms.CharField(required=True,help_text='Phone/Mobile Number')
+    email = forms.EmailField(required=False,help_text='Email') #some do not have/use email
+    cellgroup = forms.CharField(required=True,help_text='Cell group')
+    
+    def clean(self):
+        """
+        check for duplications.
+        """
+        cleaned_data = self.cleaned_data
+        name = cleaned_data.get('name')
+        phone = cleaned_data.get('phone')
+        if name and phone:
+            #Only when both fields are valid so far.
+            try:
+                # Does this borrower exist in our list already?
+                Borrower.objects.get(name=name,phone=phone)
+            except Borrower.DoesNotExist:
+                # All good, new entry.
+                pass
+            else:
+                raise ValidationError('This borrower already exists in the database! Check the list of borrowers if unsure.',code='invalid')
+            return cleaned_data
+    
+    class Meta:
+        model = Borrower
+        fields = ('name','phone','email','cellgroup',)

@@ -14,14 +14,14 @@ from datetime import date
 
 def populate():
     #add books
-    book_1 = add_book('Why in Jesus', 'AC0001')
-    book_2 = add_book('What in Jesus', 'BC0002')
-    book_3 = add_book('Where is Jesus', 'AE0003')
+    book_1 = add_book('I am book 1', 'AC0001')
+    book_2 = add_book('I am book 2', 'BC0002')
+    book_3 = add_book('I am book 3', 'AE0003')
     
     #add borrowers
-    alice = add_borrower('Alice Ain', '0413245666', 'alice@example.com', 'K&J', 'I')
-    bob = add_borrower('Bob Buddy', '0413999454', 'bob@gmail.com', 'Q&A') #no status
-    cathy = add_borrower('Cathy Chan', '0416345176', 'cathy@hotmail.com', 'D&C', 'D')
+    alice = add_borrower('Alice Ain', '1234567890', 'alice@example.com', 'K&J cell') #no statusflag
+    bob = add_borrower('Bob Buddy', '0413999454', 'bob@gmail.com', 'Q&A cell') 
+    cathy = add_borrower('Cathy Chan', '0416345176', 'cathy@hotmail.com', 'D&C cell')
     
     #add transactions
     add_transaction(book=book_1, borrower=bob, borrow_date=date.today(), borrow_manager='LP',return_date=datetime.date.today()-datetime.timedelta(days=11), return_manager='ZY')
@@ -33,8 +33,8 @@ def add_book(name, code):
     p.save()
     return p
 
-def add_borrower(name,phone,email,cellgroup,status='I'):
-    p = Borrower.objects.get_or_create(name=name,phone=phone,email=email,cellgroup=cellgroup,status=status)[0]
+def add_borrower(name,phone,email,cellgroup):
+    p = Borrower.objects.get_or_create(name=name,phone=phone,email=email,cellgroup=cellgroup)[0]
     p.save()
     return p
 

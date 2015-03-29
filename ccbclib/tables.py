@@ -20,9 +20,9 @@ class BorrowerTable(tables.Table):
 
 class TransactionTable(tables.Table):
     idtransaction = tables.Column(verbose_name="id")
+    cal_due_date = tables.DateColumn(verbose_name="Due Date")
     is_returned = tables.BooleanColumn(verbose_name="Is it returned?")
-    is_overdue = tables.BooleanColumn(verbose_name="Is/Was it overdue?")
+    is_overdue = tables.BooleanColumn(verbose_name="Is it overdue?")
     class Meta:
         model = Transaction
         attrs = {"class": "paleblue"}
-        #sequence = ()

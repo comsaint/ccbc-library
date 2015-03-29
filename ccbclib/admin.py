@@ -22,7 +22,7 @@ class TransactionAdmin(admin.ModelAdmin):
         ('Renew Details',    {'fields': ['renew_date','renew_manager']}),
         ('Return Details',   {'fields': ['return_date','return_manager']}),
     ]
-    list_display = ('idtransaction','book','borrower','borrow_date','renew_date','return_date','borrow_manager','renew_manager','return_manager','cal_due_date','is_returned','is_overdue')
+    list_display = ('idtransaction','book','borrower','borrow_date','renew_date','return_date','borrow_manager','renew_manager','return_manager','cal_due_date','is_returned','is_due_soon','is_overdue')
     #list_filter = ['borrow_date']
 
 admin.site.register(Book, BookAdmin)
