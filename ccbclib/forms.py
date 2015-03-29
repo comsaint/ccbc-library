@@ -51,11 +51,13 @@ class AddBorrowerForm(forms.ModelForm):
         if name and phone:
             #Only when both fields are valid so far.
             try:
+                # Does this borrower exist in our list already?
                 Borrower.objects.get(name=name,phone=phone)
             except Borrower.DoesNotExist:
+                # All good, new entry.
                 pass
             else:
-                raise ValidationError(_('This borrower already exists in the database.'),code='invalid')
+                raise ValidationError('This borrower already exists in the database! Check the list of borrowers if unsure.',code='invalid')
             return cleaned_data
     
     class Meta:

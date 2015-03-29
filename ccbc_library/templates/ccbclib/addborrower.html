@@ -7,6 +7,9 @@
                 <h1>Add Borrower Form</h1><br />
                 <h3>Please fill in the fields below:</h3>
     </div>
+            <font color="red">
+            {{ form.non_field_errors }}
+            </font>
             <div>
             <form id="add_borrower_form" method="post" action="/ccbclib/addborrower/">
             {% csrf_token %}

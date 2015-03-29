@@ -102,7 +102,8 @@ def addborrower(request):
             form.save(commit=True)
             return HttpResponseRedirect(reverse('ccbclib:success'))
         else:
-            print(form.errors)
+            # Display error on the template.
+            return render(request, 'ccbclib/addborrower.html', {'form': form})
     else:
         # If the request was not a POST, display the form to enter details.
         form = AddBorrowerForm()
