@@ -4,10 +4,12 @@ from ccbclib.forms import BorrowForm, ReturnForm, RenewForm, AddBorrowerForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse, reverse_lazy
 from ccbclib.models import Book, Borrower, Transaction
+from django.views.generic.list import ListView
 from django.views.generic.edit import FormView, UpdateView, DeleteView,\
     CreateView
 from django_tables2 import RequestConfig
 from ccbclib.tables import BookTable, BorrowerTable, TransactionTable
+from statistics import mode
 
 
 def index(request):
@@ -138,12 +140,15 @@ def infotable(request,dataToDisplay):
 
 
 ##django's built-in generic view.
-# CRUD for Book models
+# CRUD for Book model
+"""
+# We may not want to add/modify/delete a book in normal applications - or set higher permission for this?
+
 class BookCreate(CreateView):
     model = Book
     fields = ['name','code']
-"""
-# We may not want to modify/delete a book in normal applications - or set higher permission for this?
+    success_url = reverse_lazy('ccbclib:success')
+
 class BookUpdate(UpdateView):
     model = Book
     fields = ['name','code']
@@ -152,3 +157,24 @@ class BookDelete(DeleteView):
     model = Book
     success_url = reverse_lazy('book-list')
 """
+# CRUD for Borrower model
+class BorrowerListView(ListView):
+    model = Borrower
+    
+class BorrowerCreate(CreateView):
+    model = Borrower
+    fields = ['name','phone','email','cellgroup']
+    success_url = reverse_lazy('ccbclib:success')
+    
+class BorrowerUpdate(UpdateView):
+    model = Borrower
+    fields = ['name','phone','email','cellgroup']
+    success_url = reverse_lazy('ccbclib:success')
+
+"""
+class BorrowerDelete(DeleteView):
+    model = Borrower
+    fields = ['name','phone','email','cellgroup']
+    success_url = reverse_lazy('ccbclib:success')
+"""
+# No easy generic edit views for Transaction model
