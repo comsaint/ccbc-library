@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from ccbclib.models import Book,Borrower,Transaction
 import datetime
 
+#Operations on Transaction model
 class BorrowForm(forms.ModelForm):
     book = forms.ModelChoiceField(queryset=Book.onshelf_books.all(),to_field_name="name",empty_label=None,required=True,help_text='Book title')
     borrower = forms.ModelChoiceField(queryset=Borrower.idle_borrowers.all(), to_field_name="name",empty_label=None,required=True,help_text="Borrower's name") #need to filter out currently borrowing ones...
@@ -26,7 +27,7 @@ class RenewForm(forms.ModelForm):
         #exclude = ('book','borrower','borrow_date','borrow_manager','return_date','return_manager',)
         
 class ReturnForm(forms.ModelForm):
-    idTransaction = forms.ModelChoiceField(queryset = Transaction.objects.filter(return_date__isnull = True),help_text='Transaction')
+    idtransaction = forms.ModelChoiceField(queryset = Transaction.objects.filter(return_date__isnull = True),help_text='Transaction')
     return_date = forms.DateField(required=True,initial=datetime.date.today(),widget=SelectDateWidget(),help_text='Return Date')
     return_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
     
@@ -35,6 +36,13 @@ class ReturnForm(forms.ModelForm):
         fields = ('idtransaction','return_date','return_manager',)
         #exclude = ('book','borrower','borrow_date','borrow_manager','renew_date','renew_manager',)
 
+# Operations on Book model
+"""
+class BookForm(forms.Form):
+    name = forms.CharField()
+    code = forms.CharField()
+"""
+# Operations on Borrower model
 class AddBorrowerForm(forms.ModelForm):
     name = forms.CharField(required=True,help_text='Name of Borrower')
     phone = forms.CharField(required=True,help_text='Phone/Mobile Number')

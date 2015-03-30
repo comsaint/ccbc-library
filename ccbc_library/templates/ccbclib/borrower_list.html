@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Borrowers{% endblock %}
+
+{% block body_block %}
+    <div class="page-header">
+         <h1>List of borrowers</h1><br />
+    </div>
+    <div class="table-responsive">
+		<table class="table table-striped" border="2" style="width:100%">
+		<tr>
+			<th>Name</th>
+			<th>Phone</th>
+			<th>Email</th>
+			<th>Cellgroup</th>
+		</tr>
+		{% for borrower in object_list %}
+		<tr>
+    		<td><a href="{% url 'ccbclib:borrower_update' pk=borrower.idborrower%}">{{ borrower.name }}</a></td> 
+            <td>{{ borrower.phone }}</td>
+            <td>{{ borrower.email }}</td>
+            <td>{{ borrower.cellgroup }}</td>
+        </tr>
+		{% empty %}
+    		<tr>No borrower yet.</tr>
+		{% endfor %}
+		
+		</table>		
+	</div>
+	<div>
+		<br /><a href="{% url 'ccbclib:borrower_add'%}"> Add a new borrower</a>
+	</div>
+{% endblock %}
