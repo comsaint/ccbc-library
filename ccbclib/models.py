@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 
 from ccbclib.constants import RENEW_DURATION, BORROW_DURATION, BOOK_AREA, BOOK_LANG
 from django.db.models.fields import AutoField
+#from django.contrib.auth.models import User
 
 # Create your models here.
 class BookManager(models.Manager):
