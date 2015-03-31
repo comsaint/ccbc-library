@@ -3,37 +3,39 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.core.exceptions import ValidationError
 from ccbclib.models import Book,Borrower,Transaction
 import datetime
+#import registration
+#from django.contrib.auth.models import User
 
 #Operations on Transaction model
 class BorrowForm(forms.ModelForm):
-    book = forms.ModelChoiceField(queryset=Book.onshelf_books.all(),to_field_name="name",empty_label=None,required=True,help_text='Book title')
-    borrower = forms.ModelChoiceField(queryset=Borrower.idle_borrowers.all(), to_field_name="name",empty_label=None,required=True,help_text="Borrower's name") #need to filter out currently borrowing ones...
+    book = forms.ModelChoiceField(queryset=Book.onshelf_books.all(),to_field_name="name",required=True,help_text='Book title')
+    borrower = forms.ModelChoiceField(queryset=Borrower.idle_borrowers.all(), to_field_name="name",required=True,help_text="Borrower's name") #need to filter out currently borrowing ones...
     borrow_date = forms.DateField(required=True,initial=datetime.date.today(),help_text='Borrow date',widget=SelectDateWidget())
-    borrow_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
+    #borrow_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
     
     class Meta:
         model = Transaction
-        fields = ('book','borrower','borrow_date','borrow_manager',)
+        fields = ('book','borrower','borrow_date')
         #exclude =('idtransaction','renew_date','renew_manager','return_date','return_manager',)
 
 class RenewForm(forms.ModelForm):
     idtransaction = forms.ModelChoiceField(queryset = Transaction.objects.filter(renew_date__isnull = True, return_date__isnull = True),help_text='Transaction')
     renew_date = forms.DateField(required=True,initial=datetime.date.today(),widget=SelectDateWidget(),help_text='Renew Date')
-    renew_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
+    #renew_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
     
     class Meta:
         model = Transaction
-        fields = ('idtransaction','renew_date','renew_manager',)
+        fields = ('idtransaction','renew_date',)
         #exclude = ('book','borrower','borrow_date','borrow_manager','return_date','return_manager',)
         
 class ReturnForm(forms.ModelForm):
     idtransaction = forms.ModelChoiceField(queryset = Transaction.objects.filter(return_date__isnull = True),help_text='Transaction')
     return_date = forms.DateField(required=True,initial=datetime.date.today(),widget=SelectDateWidget(),help_text='Return Date')
-    return_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
+    #return_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
     
     class Meta:
         model = Transaction
-        fields = ('idtransaction','return_date','return_manager',)
+        fields = ('idtransaction','return_date',)
         #exclude = ('book','borrower','borrow_date','borrow_manager','renew_date','renew_manager',)
 
 # Operations on Book model
@@ -71,3 +73,4 @@ class AddBorrowerForm(forms.ModelForm):
     class Meta:
         model = Borrower
         fields = ('name','phone','email','cellgroup',)
+        

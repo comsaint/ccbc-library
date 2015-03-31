@@ -44,11 +44,12 @@
           <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'ccbclib:home' %}">Home</a></li>
                 {% if user.is_authenticated %}
-
+				<li><a href="{% url 'auth_logout' %}?next=/accounts/login/">Logout</a></li>
                 {% else %}
-                        
+                <li><a href="{% url 'auth_login' %}">Login</a></li>
                 {% endif %}
-                        <li><a href="{% url 'ccbclib:about' %}">About</a></li>
+                <li><a href="{% url 'registration_register' %}">Registrer</a></li>
+                <li><a href="{% url 'ccbclib:about' %}">About</a></li>
                 {% comment %}
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'restricted' %}">Restricted Page</a></li>
