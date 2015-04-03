@@ -8,30 +8,43 @@ import datetime
 
 #Operations on Transaction model
 class BorrowForm(forms.ModelForm):
-    book = forms.ModelChoiceField(queryset=Book.onshelf_books.all(),to_field_name="name",required=True,help_text='Book title')
-    borrower = forms.ModelChoiceField(queryset=Borrower.idle_borrowers.all(), to_field_name="name",required=True,help_text="Borrower's name") #need to filter out currently borrowing ones...
+    book = forms.ModelChoiceField(queryset=Book.objects.none())
+    borrower = forms.ModelChoiceField(queryset=Borrower.objects.none())
     borrow_date = forms.DateField(required=True,initial=datetime.date.today(),help_text='Borrow date',widget=SelectDateWidget())
     #borrow_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
     
+    def __init__(self,*args,**kwargs):
+        super(BorrowForm,self).__init__(*args,**kwargs)
+        self.fields['book'] = forms.ModelChoiceField(queryset=Book.onshelf_books.all(),to_field_name="name",required=True,help_text='Book title')
+        self.fields['borrower'] = forms.ModelChoiceField(queryset=Borrower.idle_borrowers.all(), to_field_name="name",required=True,help_text="Borrower's name")
+        
     class Meta:
         model = Transaction
         fields = ('book','borrower','borrow_date')
         #exclude =('idtransaction','renew_date','renew_manager','return_date','return_manager',)
 
 class RenewForm(forms.ModelForm):
-    idtransaction = forms.ModelChoiceField(queryset = Transaction.objects.filter(renew_date__isnull = True, return_date__isnull = True),help_text='Transaction')
+    idtransaction = forms.ModelChoiceField(queryset=Transaction.objects.none())
     renew_date = forms.DateField(required=True,initial=datetime.date.today(),widget=SelectDateWidget(),help_text='Renew Date')
     #renew_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
     
+    def __init__(self,*args,**kwargs):
+        super(RenewForm,self).__init__(*args,**kwargs)
+        self.fields['idtransaction'] = forms.ModelChoiceField(queryset = Transaction.objects.filter(renew_date__isnull = True, return_date__isnull = True),help_text='Transaction')
+        
     class Meta:
         model = Transaction
         fields = ('idtransaction','renew_date',)
         #exclude = ('book','borrower','borrow_date','borrow_manager','return_date','return_manager',)
         
 class ReturnForm(forms.ModelForm):
-    idtransaction = forms.ModelChoiceField(queryset = Transaction.objects.filter(return_date__isnull = True),help_text='Transaction')
+    idtransaction = forms.ModelChoiceField(queryset = Transaction.objects.none())
     return_date = forms.DateField(required=True,initial=datetime.date.today(),widget=SelectDateWidget(),help_text='Return Date')
     #return_manager = forms.CharField(required=True,help_text="Manager's Initials")#change this to ChoiceField later
+    
+    def __init__(self,*args,**kwargs):
+        super(ReturnForm,self).__init__(*args,**kwargs)
+        self.fields['idtransaction'] = forms.ModelChoiceField(queryset = Transaction.objects.filter(return_date__isnull = True),help_text='Transaction')
     
     class Meta:
         model = Transaction
@@ -44,33 +57,4 @@ class BookForm(forms.Form):
     name = forms.CharField()
     code = forms.CharField()
 """
-# Operations on Borrower model
-class AddBorrowerForm(forms.ModelForm):
-    name = forms.CharField(required=True,help_text='Name of Borrower')
-    phone = forms.CharField(required=True,help_text='Phone/Mobile Number')
-    email = forms.EmailField(required=False,help_text='Email') #some do not have/use email
-    cellgroup = forms.CharField(required=True,help_text='Cell group')
-    
-    def clean(self):
-        """
-        check for duplications.
-        """
-        cleaned_data = self.cleaned_data
-        name = cleaned_data.get('name')
-        phone = cleaned_data.get('phone')
-        if name and phone:
-            #Only when both fields are valid so far.
-            try:
-                # Does this borrower exist in our list already?
-                Borrower.objects.get(name=name,phone=phone)
-            except Borrower.DoesNotExist:
-                # All good, new entry.
-                pass
-            else:
-                raise ValidationError('This borrower already exists in the database! Check the list of borrowers if unsure.',code='invalid')
-            return cleaned_data
-    
-    class Meta:
-        model = Borrower
-        fields = ('name','phone','email','cellgroup',)
         

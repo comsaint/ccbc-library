@@ -28,6 +28,8 @@ def success(request):
 
 @login_required
 def bookborrow(request):
+    staffname = get_staffname(request)
+        
     # A HTTP POST?
     if request.method == 'POST':
         form = BorrowForm(request.POST)
@@ -35,10 +37,7 @@ def bookborrow(request):
         # Have we been provided with a valid form?
         if form.is_valid():
             tmp_tran = form.save(commit=False)
-            if request.user.get_full_name()!="":
-                tmp_tran.borrow_manager = request.user.get_full_name()
-            else:
-                tmp_tran.borrow_manager = request.user.get_username()
+            tmp_tran.borrow_manager = staffname
             tmp_tran.save()
             # Now call the index() view.
             # The user will be shown the homepage.
@@ -49,9 +48,7 @@ def bookborrow(request):
     else:
         # If the request was not a POST, display the form to enter details.
         form = BorrowForm()
-        staffname = request.user.get_full_name()
-        if staffname=="":
-            staffname = request.user.get_username()
+
 
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
@@ -59,6 +56,8 @@ def bookborrow(request):
 
 @login_required
 def bookreturn(request):
+    staffname = get_staffname(request)
+        
     if request.method == 'POST':
         form = ReturnForm(request.POST)
         # Have we been provided with a valid form?
@@ -66,10 +65,7 @@ def bookreturn(request):
             transaction = Transaction.objects.get(pk=form.cleaned_data['idtransaction'].idtransaction)
             form = ReturnForm(request.POST, instance=transaction)
             tmp_tran = form.save(commit=False)
-            if request.user.get_full_name()!="":
-                tmp_tran.return_manager = request.user.get_full_name()
-            else:
-                tmp_tran.return_manager = request.user.get_username()
+            tmp_tran.return_manager = staffname
             tmp_tran.save()
             # Now call the home() view.
             # The user will be shown the homepage.
@@ -85,6 +81,8 @@ def bookreturn(request):
 
 @login_required
 def bookrenew(request):
+    staffname = get_staffname(request)
+        
     if request.method == 'POST':
         form = RenewForm(request.POST)
         # Have we been provided with a valid form?
@@ -92,10 +90,7 @@ def bookrenew(request):
             transaction = Transaction.objects.get(pk=form.cleaned_data['idtransaction'].idtransaction)
             form = RenewForm(request.POST, instance=transaction)
             tmp_tran = form.save(commit=False)
-            if request.user.get_full_name()!="":
-                tmp_tran.renew_manager = request.user.get_full_name()
-            else:
-                tmp_tran.renew_manager = request.user.get_username()
+            tmp_tran.renew_manager = staffname
             tmp_tran.save()
             return HttpResponseRedirect(reverse('ccbclib:success'))
         else:
@@ -103,9 +98,7 @@ def bookrenew(request):
     else:
         # If the request was not a POST, display the form to enter details.
         form = RenewForm()
-        staffname = request.user.get_full_name()
-        if staffname=="":
-            staffname = request.user.get_username()
+        
 
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
@@ -182,3 +175,10 @@ class BorrowerDelete(DeleteView):
     success_url = reverse_lazy('ccbclib:success')
 """
 # No easy generic edit views for Transaction model
+
+#Some custom functions
+def get_staffname(request):
+    staffname = request.user.get_full_name()
+    if staffname=="":
+        staffname = request.user.get_username()
+    return staffname
