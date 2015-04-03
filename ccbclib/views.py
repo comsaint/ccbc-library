@@ -10,7 +10,7 @@ from django_tables2 import RequestConfig
 from ccbclib.tables import BookTable, BorrowerTable, TransactionTable
 #from statistics import mode
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 
 def about(request):
     context_dict = {}
