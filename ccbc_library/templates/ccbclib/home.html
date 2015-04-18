@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Home{% endblock %}
+
+{% block body_block %}
+    <div class="page-header">
+                <div class="jumbotron">
+                	<h2>Welcome to CCBC Library!</h2>
+                </div>
+                <h3>I want to ...</h3>
+    </div>
+            <div>
+            <a href="{% url 'ccbclib:borrow'%}"> Borrow a book </a> <br /><br />
+            <a href="{% url 'ccbclib:renew'%}"> Renew a book </a> <br /><br />
+            <a href="{% url 'ccbclib:return'%}"> Return a book </a> <br /><br />
+            <a href="{% url 'ccbclib:borrower_list'%}"> Add/View/Edit borrowers </a> <br /><br />
+            </div>
+{% endblock %}
