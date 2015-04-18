@@ -2,38 +2,24 @@ from django.db import models
 import datetime
 from django.core.urlresolvers import reverse
 
-from ccbclib.constants import RENEW_DURATION, BORROW_DURATION, BOOK_AREA, BOOK_LANG
+from ccbclib.constants import RENEW_DURATION, BORROW_DURATION, BOOK_AREA, BOOK_LANG, CODE_COLOUR
 from django.db.models.fields import AutoField
 #from django.contrib.auth.models import User
 
 # Create your models here.
-class BookManager(models.Manager):
-    def get_queryset(self):
-        q = Book.objects.all()
-        q_ids = [o.idbook for o in q if o.get_book_status()=='Onshelf']
-        q = q.filter(idbook__in=q_ids)
-        return q
-    
 class Book(models.Model):
     idbook = models.AutoField(primary_key=True)
+    
+    code_colour = models.CharField(max_length=16,null=True,blank=True,choices=CODE_COLOUR,default=None)
+    code_number = models.CharField(max_length=6,default=None,unique=True) #id code of the book. Normally in format ccdddd
     name = models.CharField(max_length=128) #name or title of the book
-    code = models.CharField(max_length=8) #id code of the book. Normally in format ccdddd
-    #area = models.CharField(max_length=32) #perhaps we can get this via the first char of the 'code' field?
+    quantity = models.IntegerField(default=0)
+    publisher = models.CharField(max_length=128,null=True,blank=True,default=None)
+    author = models.CharField(max_length=128,null=True,blank=True,default=None)
+    lang = models.CharField(max_length=8,choices=BOOK_LANG)
+    book_area = models.CharField(max_length=128,choices=BOOK_AREA,default='UNKNOWN')
+    
     statusflag = models.CharField(max_length=16,choices=(('NM','Normal'),('SP','Special')),default='NM')#this should only be changed in admin view
-    objects = models.Manager() # The default manager.
-    onshelf_books = BookManager()
-    
-    def get_area(self):
-        """
-        Get the area of which a book is in via 1st field of the code.
-        """
-        return BOOK_AREA[self.code[0]]
-    
-    def get_language(self):
-        """
-        Get the language of a book via 2nd field of the code.
-        """
-        return BOOK_LANG[self.code[1]]
         
     def get_book_status(self):
         """
@@ -66,11 +52,12 @@ class Book(models.Model):
         return reverse('ccbclib:success')
     
     def __str__(self):
-        return self.name
+        return ' -- '.join([self.name,self.code_number])
     
     class Meta:
-        ordering = ["code"]
-        
+        ordering = ["code_number"]
+
+
 class BorrowerManager(models.Manager):
     def get_queryset(self):
         q = Borrower.objects.all()
@@ -78,11 +65,13 @@ class BorrowerManager(models.Manager):
         q = q.filter(idborrower__in=q_ids)
         return q
 
+
 class Borrower(models.Model):
     idborrower = AutoField(primary_key=True)
+    
     name = models.CharField(max_length=128)
     phone = models.CharField(max_length=10)
-    email = models.EmailField(null=True,blank=True,default='no_email@no_email.com') #some do not have/use email
+    email = models.EmailField(null=True,blank=True,default=None) #some do not have/use email
     cellgroup = models.CharField(max_length=128)
     statusflag = models.CharField(max_length=16,choices=(('NM','Normal'),('SP','Special')),default='NM')#this should only be changed in admin view
     objects = models.Manager() # The default manager.
@@ -126,6 +115,7 @@ class TransactionManager(models.Manager):
 
 class Transaction(models.Model):
     idtransaction = AutoField(primary_key=True)
+    
     book = models.ForeignKey('Book',related_name='book')
     borrower = models.ForeignKey('Borrower',related_name='borrower')
     borrow_date = models.DateField()

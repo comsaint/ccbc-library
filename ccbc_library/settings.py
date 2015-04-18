@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    "autocomplete_light",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -148,3 +149,30 @@ PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.PBKDF2PasswordHasher',
         'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
 )
+
+### Deploy
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES = {
+    'default': dj_database_url.config()
+}
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
+
+# Static asset configuration
+STATIC_ROOT = 'staticfiles'
+
+# Turn off DEBUG mode
+DEBUG = False
+
+TEMPLATE_DEBUG = False
+
+# Import all of local settings if the file exists
+try:
+    from .local_settings import *
+except ImportError:
+    pass

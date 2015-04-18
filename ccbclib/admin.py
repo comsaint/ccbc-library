@@ -1,11 +1,13 @@
 from django.contrib import admin
 from ccbclib.models import Book, Borrower, Transaction
+import autocomplete_light
 
 # Register your models here.
 class BookAdmin(admin.ModelAdmin):
-    fields = ['name','code']
-    list_display = ('name','code','get_area','get_language','get_book_status','get_times_borrowed','statusflag',)
-    search_fields = ['name']
+    fields = ['name','code_number','quantity','publisher','author','book_area','lang',]
+    list_display = ('name','code_number','quantity','publisher','author','book_area','lang','get_book_status','get_times_borrowed','statusflag',)
+    search_fields = ['code_number']
+    #form = autocomplete_light.modelform_factory(Book)
 
 class BorrowerAdmin(admin.ModelAdmin):
     fieldsets = [
