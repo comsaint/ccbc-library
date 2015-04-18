@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from ccbclib.forms import BorrowForm, ReturnForm, RenewForm
+from ccbclib.forms import BorrowForm, BorrowFormAutoComplete, ReturnForm, RenewForm, BookDummyForm
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -32,12 +32,14 @@ def bookborrow(request):
         
     # A HTTP POST?
     if request.method == 'POST':
-        form = BorrowForm(request.POST)
-
+        #form = BorrowForm(request.POST)
+        #form = BorrowFormAutoComplete(request.POST)
+        form = BookDummyForm(request.POST)
         # Have we been provided with a valid form?
         if form.is_valid():
             tmp_tran = form.save(commit=False)
             tmp_tran.borrow_manager = staffname
+            tmp_tran.book.quantity = tmp_tran.book.quantity-1
             tmp_tran.save()
             # Now call the index() view.
             # The user will be shown the homepage.
@@ -47,9 +49,9 @@ def bookborrow(request):
             print(form.errors)
     else:
         # If the request was not a POST, display the form to enter details.
-        form = BorrowForm()
-
-
+        #form = BorrowForm()
+        #form = BorrowFormAutoComplete()
+        form = BookDummyForm()
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
     return render(request, 'ccbclib/borrow.html', {'form': form,'staffname':staffname})
@@ -66,6 +68,7 @@ def bookreturn(request):
             form = ReturnForm(request.POST, instance=transaction)
             tmp_tran = form.save(commit=False)
             tmp_tran.return_manager = staffname
+            tmp_tran.book.quantity = tmp_tran.book.quantity+1
             tmp_tran.save()
             # Now call the home() view.
             # The user will be shown the homepage.
@@ -74,9 +77,7 @@ def bookreturn(request):
             print(form.errors)
     else:
         form = ReturnForm()
-        staffname = request.user.get_full_name()
-        if staffname=="":
-            staffname = request.user.get_username()
+
     return render(request, 'ccbclib/return.html', {'form': form,'staffname':staffname})
 
 @login_required

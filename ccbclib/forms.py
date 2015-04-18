@@ -3,6 +3,9 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.core.exceptions import ValidationError
 from ccbclib.models import Book,Borrower,Transaction
 import datetime
+import autocomplete_light
+from autocomplete_light.widgets import TextWidget
+
 #import registration
 #from django.contrib.auth.models import User
 
@@ -15,7 +18,7 @@ class BorrowForm(forms.ModelForm):
     
     def __init__(self,*args,**kwargs):
         super(BorrowForm,self).__init__(*args,**kwargs)
-        self.fields['book'] = forms.ModelChoiceField(queryset=Book.onshelf_books.all(),to_field_name="name",required=True,help_text='Book title')
+        #self.fields['book'] = forms.ModelChoiceField(queryset=Book.onshelf_books.all(),to_field_name="name",required=True,help_text='Book title')
         self.fields['borrower'] = forms.ModelChoiceField(queryset=Borrower.idle_borrowers.all(), to_field_name="name",required=True,help_text="Borrower's name")
         self.fields['borrow_date'] = forms.DateField(required=True,initial=datetime.date.today(),help_text='Borrow date',widget=SelectDateWidget())
         
@@ -23,6 +26,38 @@ class BorrowForm(forms.ModelForm):
         model = Transaction
         fields = ('book','borrower','borrow_date')
         #exclude =('idtransaction','renew_date','renew_manager','return_date','return_manager',)
+
+class BorrowFormAutoComplete(autocomplete_light.ModelForm):
+    book = forms.ModelChoiceField(queryset=Book.objects.none())
+    borrower = forms.ModelChoiceField(queryset=Borrower.objects.none())
+    borrow_date = forms.DateField()
+    
+    def __init__(self,*args,**kwargs):
+        super(BorrowFormAutoComplete,self).__init__(*args,**kwargs)
+        self.fields['book'] = forms.ModelChoiceField(queryset=Book.objects.filter(quantity__gt=0),to_field_name="name",required=True,help_text='Book Title',widget=autocomplete_light.TextWidget('BookAutocomplete'))
+        self.fields['borrower'] = forms.ModelChoiceField(queryset=Borrower.idle_borrowers.all(), to_field_name="name",required=True,help_text="Borrower's name")
+        self.fields['borrow_date'] = forms.DateField(required=True,initial=datetime.date.today(),help_text='Borrow date',widget=SelectDateWidget())
+        
+    class Meta:
+        model = Transaction
+        fields = ('book','borrower','borrow_date')
+        #autocomplete_names = {'book': 'BookAutocomplete'}
+        autocomplete_fields = ('book',)
+
+class BookDummyForm(autocomplete_light.ModelForm):
+    #book = forms.ModelChoiceField(queryset=Book.objects.none())
+    borrower = forms.ModelChoiceField(queryset=Borrower.objects.none())
+    borrow_date = forms.DateField(required=True,initial=datetime.date.today(),help_text='Borrow date',widget=SelectDateWidget())
+    
+    def __init__(self,*args,**kwargs):
+        super(BookDummyForm,self).__init__(*args,**kwargs)
+        self.fields['book'] = forms.ModelChoiceField(queryset=Book.objects.filter(quantity__gt=0),to_field_name="name",required=True,help_text='Book title')
+        self.fields['borrower'] = forms.ModelChoiceField(queryset=Borrower.idle_borrowers.all(), to_field_name="name",required=True,help_text="Borrower's name")
+    #    self.fields['borrow_date'] = forms.DateField(required=True,initial=datetime.date.today(),help_text='Borrow date',widget=SelectDateWidget())
+    
+    class Meta:
+        model = Transaction
+        fields = ['book','borrower','borrow_date']
 
 class RenewForm(forms.ModelForm):
     idtransaction = forms.ModelChoiceField(queryset=Transaction.objects.none())

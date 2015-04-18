@@ -15,4 +15,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ccbclib/',include('ccbclib.urls',namespace='ccbclib')),
     url(r'^accounts/', include('registration.backends.simple.urls')),
+    url(r'^autocomplete/', include('autocomplete_light.urls')),
 )
