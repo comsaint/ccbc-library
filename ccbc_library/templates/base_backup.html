@@ -48,7 +48,7 @@
                 {% else %}
                 <li><a href="{% url 'auth_login' %}">Login</a></li>
                 {% endif %}
-                <li><a href="{% url 'registration_register' %}">Register a new staff</a></li>
+                <li><a href="{% url 'registration_register' %}">Registrer</a></li>
                 <li><a href="{% url 'ccbclib:about' %}">About</a></li>
                 {% comment %}
                     {% if user.is_authenticated %}
@@ -72,12 +72,22 @@
                 {% block side_block %}
                 <ul class="nav nav-pills nav-stacked">
         			<li class="active"><a href=" {% url 'ccbclib:home' %} ">Home</a></li>
-        			<br />
-        			<li>Check Database:</li>
-            		<li><a href=" {% url 'ccbclib:infotable' 'books'%} ">Books</a></li>
-                	<li><a href=" {% url 'ccbclib:infotable' 'borrowers'%} ">Borrowers</a></li>
-                	<li><a href=" {% url 'ccbclib:infotable' 'transactions'%} ">Transactions</a></li>
-                	<br />
+        			
+        			<li class="dropdown">
+          			<a class="dropdown-toggle" data-toggle="dropdown" href="#">Check Database<span class="caret"></span></a>
+          				<ul class="dropdown-menu">
+            				<li><a href=" {% url 'ccbclib:infotable' 'books'%} ">Books</a></li>
+                			<li><a href=" {% url 'ccbclib:infotable' 'borrowers'%} ">Borrowers</a></li>
+                			<li><a href=" {% url 'ccbclib:infotable' 'transactions'%} ">Transactions</a></li>
+                		</ul>
+                	</li>
+                	<li class="dropdown">
+      			  	<a class="dropdown-toggle" data-toggle="dropdown" href="#">Services<span class="caret"></span></a>
+      			  	    <ul class="dropdown-menu">
+      			    		<li><a href="{% url 'ccbclib:borrow'%}"> Borrow</a></li>
+            				<li><a href="{% url 'ccbclib:renew'%}"> Renew</a></li>
+            				<li><a href="{% url 'ccbclib:return'%}"> Return</a></li>
+            		</li>
      			 
                 {% endblock %}
         </div>
@@ -92,9 +102,9 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
     {% include 'autocomplete_light/static.html' %}
+    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="http://getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>

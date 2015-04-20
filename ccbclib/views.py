@@ -39,7 +39,12 @@ def bookborrow(request):
         if form.is_valid():
             tmp_tran = form.save(commit=False)
             tmp_tran.borrow_manager = staffname
-            tmp_tran.book.quantity = tmp_tran.book.quantity-1
+            
+            #need to change the quantity of Book as well
+            tmp_book = Book.objects.get(code_number=tmp_tran.book.code_number)
+            tmp_book.quantity = tmp_tran.book.quantity-1
+            tmp_book.save()
+            
             tmp_tran.save()
             # Now call the index() view.
             # The user will be shown the homepage.
@@ -68,7 +73,12 @@ def bookreturn(request):
             form = ReturnForm(request.POST, instance=transaction)
             tmp_tran = form.save(commit=False)
             tmp_tran.return_manager = staffname
-            tmp_tran.book.quantity = tmp_tran.book.quantity+1
+            
+            #need to change the quantity of Book as well
+            tmp_book = Book.objects.get(code_number=tmp_tran.book.code_number)
+            tmp_book.quantity = tmp_tran.book.quantity+1
+            tmp_book.save()
+            
             tmp_tran.save()
             # Now call the home() view.
             # The user will be shown the homepage.

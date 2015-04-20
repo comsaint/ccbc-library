@@ -139,7 +139,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ADMINS = (('Long', os.environ.get('MY_GMAIL_ADDRESS','')))
 
 #django-registration-redux
-REGISTRATION_OPEN = True                # If True, users can register
+REGISTRATION_OPEN = False                # If True, users can register
 ACCOUNT_ACTIVATION_DAYS = 9     # One-week activation window; you may, of course, use a different value.
 REGISTRATION_AUTO_LOGIN = True  # If True, the user will be automatically logged in.
 LOGIN_REDIRECT_URL = '/ccbclib/home/'  # The page you want users to arrive at after they successful log in
