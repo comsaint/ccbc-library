@@ -2,6 +2,10 @@
 env
 *.pyc
 staticfiles
+secrets
+secrets~
+SECRET_KEY
+SECRET_KEY~
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

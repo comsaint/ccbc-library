@@ -23,7 +23,8 @@ TEMPLATE_DIRS = (
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '76zi637_w493mr-0&^(_70m@0$m$1yj@22y+l4qf$ou$#-&#(-'
+with open('/'.join([BASE_DIR,'SECRET_KEY'])) as f:
+    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
