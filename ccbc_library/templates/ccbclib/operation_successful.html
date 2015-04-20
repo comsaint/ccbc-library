@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Successful{% endblock %}
+
+{% block body_block %}
+    <div class="page-header">
+                <h1>Operation successful!</h1><br />
+                <h3>You can click the link below to go back to home page.</h3>
+    </div>
+            <div>
+            <li><a href="{% url 'ccbclib:home'%}"> Back to Home </a></li><br />
+            </div>
+{% endblock %}
