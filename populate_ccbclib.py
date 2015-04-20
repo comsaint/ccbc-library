@@ -3,7 +3,7 @@ Populate sample data to fill in the database.
 """
 import os
 from tkinter.tix import ROW
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ccbc_library.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ccbc_library.deploy_settings')
 
 import django
 django.setup()
