@@ -2,12 +2,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-# Import all of local settings if the file exists
-try:
-    from .local_settings import *
-except ImportError:
-    pass
-
 ### Deploy. Overwrite settings.
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
@@ -36,3 +30,8 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
+# Import all of local settings if the file exists
+try:
+    from .local_settings import *
+except ImportError:
+    pass
