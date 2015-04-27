@@ -6,15 +6,17 @@ from ccbclib.models import Book, Borrower, Transaction
 #import datetime
 from django.template.loader import get_template
 from django.template import Context
+from django.core.mail import send_mail
 
 def print_task():
     print("In a task!")
     
 def SendTestMail():
     print('Email in preparation...')
-    email=EmailMessage('Subject here', 'Here is the message.', to = ['comsaint26@hotmail.com'],fail_silently=False)
+    #email=EmailMessage('Subject here', 'Here is the message.', to = ['comsaint26@hotmail.com'],fail_silently=False)
     print('Email is ready...')
-    email.send()
+    #email.send()
+    send_mail('Subject here', 'Here is the message.', 'longpun88@gmail.com', ['comsaint26@hotmail.com'], fail_silently=False)
     print('Email sent!')
 
 def SendNoticeEmail():
