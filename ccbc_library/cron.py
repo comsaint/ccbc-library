@@ -1,5 +1,6 @@
 from django_cron import CronJobBase, Schedule
 from ccbclib import tasks
+import datetime
 
 class MyCronJob(CronJobBase):
     RUN_EVERY_MINS = 1 # every 1 minute
@@ -9,4 +10,7 @@ class MyCronJob(CronJobBase):
 
     def do(self):
         # do your thing here
-        tasks.SendNoticeEmail()        
+        print(datetime.datetime.now().strftime("%A"))
+        tasks.SendTestMail()
+        
+        #tasks.SendNoticeEmail()        
