@@ -26,14 +26,12 @@ STATICFILES_DIRS = (
 )
 
 #sendgrid, for email
-EMAIL_BACKEND = "sgbackend.SendGridBackend"
-EMAIL_HOST = 'smtp.sendgrid.net'
+#EMAIL_BACKEND = "sgbackend.SendGridBackend"
+#EMAIL_HOST = 'smtp.sendgrid.net'
 #EMAIL_HOST_USER = os.environ.get('sendgrid_username','')
 #EMAIL_HOST_PASSWORD = os.environ.get('sendgrid_password','')
-EMAIL_HOST_USER ='comsaint'
-EMAIL_HOST_PASSWORD = '8y8st657'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
 
 # Turn off DEBUG mode
 DEBUG = False
