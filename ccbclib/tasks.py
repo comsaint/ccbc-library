@@ -2,21 +2,21 @@
 from django.core import mail
 from django.core.mail import EmailMessage, EmailMultiAlternatives, mail_admins
 import os
-from ccbclib.models import Book, Borrower, Transaction
-#import datetime
+from ccbclib.models import Transaction
+import datetime
 from django.template.loader import get_template
 from django.template import Context
-from django.core.mail import send_mail
+#from django.core.mail import send_mail
 
 def print_task():
     print("In a task!")
     
 def SendTestMail():
     print('Email in preparation...')
-    #email=EmailMessage('Subject here', 'Here is the message.', to = ['comsaint26@hotmail.com'],fail_silently=False)
+    email=EmailMessage('Regular Reminder from CCBC', 'A test message is compiled and sent successfully.', to = ['comsaint26@hotmail.com'],fail_silently=False)
     print('Email is ready...')
-    #email.send()
-    send_mail('Subject here', 'Here is the message.', 'longpun88@gmail.com', ['comsaint26@hotmail.com'], fail_silently=False)
+    email.send()
+    #send_mail('Subject here', 'Here is the message.', 'longpun88@gmail.com', ['comsaint26@hotmail.com'], fail_silently=False)
     print('Email sent!')
 
 def SendNoticeEmail():
@@ -26,14 +26,20 @@ def SendNoticeEmail():
     q = Transaction.objects.filter(return_date=None)
     connection = mail.get_connection()
     connection.open()
+    SendTestMail()
     
+    send_cnt = 0
+    item_overdue = 0
     for tran in q:
         if tran.is_overdue() or tran.is_due_soon():
+            item_overdue+=1
             if tran.borrower.email != None:
                 email = EmailGen(tran)
                 email.send()
+                send_cnt+=1
 
     connection.close() # manually close the connection
+    print(item_overdue,'items overdue, with',send_cnt, 'emails sent on', datetime.datetime.today().strftime("%c"),'\n')
     
 def EmailGen(tran):
     """

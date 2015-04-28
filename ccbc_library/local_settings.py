@@ -88,6 +88,18 @@ DATABASES = {
     }
 }
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'template1',
+#        'USER': 'long',
+
+#        'HOST': '127.0.0.1',
+#        'PORT': '5432',
+#    }
+#}
+#DATABASE_URL = 'postgres://fvftlkwfuuebsu:PoIZlpveeeFxfkq2lsQI1i2kgw@ec2-54-225-101-18.compute-1.amazonaws.com:5432/d6osjlb3d950r5'
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
