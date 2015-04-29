@@ -2,16 +2,12 @@
 Populate sample data to fill in the database.
 """
 import os
-from tkinter.tix import ROW
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ccbc_library.deploy_settings')
 
 import django
 django.setup()
 
 from ccbclib.models import Book, Borrower, Transaction
-#from ccbclib.constants import BOOK_STATUS_CHOICE, BORROWER_STATUS_CHOICE
-import datetime
-from datetime import date
 import csv
 
 def populate():
@@ -26,8 +22,8 @@ def populate():
         rownum=0
         for row in reader:
             if rownum == 0:
-                headers = row
-                #print(headers)
+                headers = row #not used
+                print(headers)
     #####################################################################
     ########### Here we assume the following headers in file:############
     
@@ -87,6 +83,8 @@ def set_book_fields(book_id, fieldname,value):
     
 # Start execution here!
 if __name__ == '__main__':
-    print("Starting population script...")
-    populate()
-    print("Done population.")
+    #print("Starting population script...")
+    #populate()
+    # try to add a borrower
+    alice = add_borrower('Alice Ain', '1234567890', 'alice@example.com', 'TEST cell')
+    #print("Done population.")

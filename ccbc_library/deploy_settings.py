@@ -5,9 +5,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ### Deploy. Overwrite settings.
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
-DATABASES = {
-    'default': dj_database_url.config()
-}
+DATABASES = {}
+DATABASES['default'] = dj_database_url.config(default='postgres://fvftlkwfuuebsu:PoIZlpveeeFxfkq2lsQI1i2kgw@ec2-54-225-101-18.compute-1.amazonaws.com:5432/d6osjlb3d950r5')
+#DATABASES = {
+#    'default': dj_database_url.config(default='postgres://fvftlkwfuuebsu:PoIZlpveeeFxfkq2lsQI1i2kgw@ec2-54-225-101-18.compute-1.amazonaws.com:5432/d6osjlb3d950r5')
+#}
+# Enable Connection Pooling
+DATABASES['default']['ENGINE'] = 'django_postgrespool'
+
+#import dj_database_url
+#DATABASES['default'] =  dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -24,14 +31,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-
-#sendgrid, for email
-#EMAIL_BACKEND = "sgbackend.SendGridBackend"
-#EMAIL_HOST = 'smtp.sendgrid.net'
-#EMAIL_HOST_USER = os.environ.get('sendgrid_username','')
-#EMAIL_HOST_PASSWORD = os.environ.get('sendgrid_password','')
-#EMAIL_PORT = 587
-#EMAIL_USE_TLS = True
 
 # Turn off DEBUG mode
 DEBUG = False
