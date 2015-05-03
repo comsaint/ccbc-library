@@ -84,7 +84,7 @@ def set_book_fields(book_id, fieldname,value):
 # Start execution here!
 if __name__ == '__main__':
     #print("Starting population script...")
-    #populate()
+    populate()
     # try to add a borrower
     alice = add_borrower('Alice Ain', '1234567890', 'alice@example.com', 'TEST cell')
     #print("Done population.")
