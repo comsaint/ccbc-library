@@ -29,17 +29,17 @@ def SendNoticeEmail():
     SendTestMail()
     
     send_cnt = 0
-    item_overdue = 0
+    item_to_send_notice = 0
     for tran in q:
         if tran.is_overdue() or tran.is_due_soon():
-            item_overdue+=1
+            item_to_send_notice+=1
             if tran.borrower.email != None:
                 email = EmailGen(tran)
                 email.send()
                 send_cnt+=1
 
     connection.close() # manually close the connection
-    print(item_overdue,'items overdue, with',send_cnt, 'emails sent on', datetime.datetime.today().strftime("%c"),'\n')
+    print(item_to_send_notice,'items overdue or due soon, with',send_cnt, 'emails sent on', datetime.datetime.today().strftime("%c"),'\n')
     
 def EmailGen(tran):
     """

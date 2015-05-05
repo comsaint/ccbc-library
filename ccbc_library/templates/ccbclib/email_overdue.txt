@@ -6,6 +6,7 @@ Dear {{ name }},
   
   Please return it to the CCBC Library as soon as possible.
 
-
+  If you have already returned this book, please disregard this message.
+  
   Kind regards,
   CCBC Library team

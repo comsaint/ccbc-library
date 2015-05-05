@@ -4,6 +4,7 @@ Dear {{ name }},
   	  
   	  Please remember to return it to the CCBC Library before due date.
   	  
+  	  If you have already returned this book, please disregard this message.
   	  
   	  Kind regards,
   	  CCBC Library team
