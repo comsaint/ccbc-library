@@ -10,10 +10,10 @@ class MyCronJob(CronJobBase):
 
     def do(self):
         # do your thing here
-        #print(datetime.datetime.today().strftime("%a"))
-        #tasks.SendTestMail()
+        print(datetime.datetime.today().strftime("%a"))
+        tasks.SendTestMail()
         
-        if(datetime.datetime.today().strftime("%a")=='Sun'):
+        #if(datetime.datetime.today().strftime("%a")=='Sun'):
             #print("Yes")
             #tasks.SendNoticeEmail()
-            tasks.SendTestMail()
+            #tasks.SendTestMail()
