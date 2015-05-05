@@ -1,6 +1,6 @@
 #from post_office import mail
 from django.core import mail
-from django.core.mail import EmailMessage, EmailMultiAlternatives, mail_admins
+from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
 import os
 from ccbclib.models import Transaction
 import datetime
@@ -13,10 +13,10 @@ def print_task():
     
 def SendTestMail():
     print('Email in preparation...')
-    email=EmailMessage('Regular Reminder from CCBC', 'A test message is compiled and sent successfully.', to = ['comsaint26@hotmail.com'],fail_silently=False)
+    email=EmailMessage('Regular Reminder from CCBC', 'A test message is compiled and sent successfully.', 'longpun88@gmail.com', to = ['comsaint26@hotmail.com'])
     print('Email is ready...')
-    email.send()
-    #send_mail('Subject here', 'Here is the message.', 'longpun88@gmail.com', ['comsaint26@hotmail.com'], fail_silently=False)
+    email.send(fail_silently=False)
+    #send_mail('test email', 'hello world', 'longpun88@gmail.com', ['comsaint26@hotmail.com'], fail_silently=False)
     print('Email sent!')
 
 def SendNoticeEmail():
