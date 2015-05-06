@@ -12,9 +12,9 @@ class MyCronJob(CronJobBase):
         # do your thing here
         print(datetime.datetime.today().strftime("%c"))
         #tasks.SendTestMail()
-        #tasks.SendNoticeEmail()
+        tasks.SendNoticeEmail()
         
-        if(datetime.datetime.today().strftime("%a")=='Tue'):
+        #if(datetime.datetime.today().strftime("%a")=='Wed'):
             #print("Yes")
-            tasks.SendNoticeEmail()
+            #tasks.SendNoticeEmail()
             #tasks.SendTestMail()
