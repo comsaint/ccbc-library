@@ -26,18 +26,29 @@ def SendNoticeEmail():
     q = Transaction.objects.filter(return_date=None)
     connection = mail.get_connection()
     connection.open()
-    SendTestMail()
+    #SendTestMail()
     
     send_cnt = 0
     item_to_send_notice = 0
+    sms_sent = 0
     for tran in q:
         if tran.is_overdue() or tran.is_due_soon():
             item_to_send_notice+=1
-            if tran.borrower.email != None:
+            if tran.borrower.email:
+                print(tran.borrower.email)
+                #print('Generate an email...')
                 email = EmailGen(tran)
-                email.send()
+                #print('Email generated successfully. Sending...')
+                email.send(fail_silently=False)
+                #print('Email sent.')
                 send_cnt+=1
-
+                #SMS?
+                
+    #Also sent a summary email to admin
+    summary_email = SummaryEmailGen(datetime.datetime.today().strftime("%c"), item_to_send_notice, send_cnt, sms_sent)
+    summary_email.send()
+    print('Summary email sent.')
+    
     connection.close() # manually close the connection
     print(item_to_send_notice,'items overdue or due soon, with',send_cnt, 'emails sent on', datetime.datetime.today().strftime("%c"),'\n')
     
@@ -65,6 +76,32 @@ def EmailGen(tran):
                             'name':borrower_name,
                             'title':book_title,
                             'due_date':due_date
+                            })
+    
+    text_content = plaintext.render(context_dict)
+    html_content = htmly.render(context_dict)
+    
+    email = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    email.attach_alternative(html_content, "text/html")
+    return email
+
+def SummaryEmailGen(time,item_notice,email_sent,sms_sent):
+    """
+    Returns an EmailMessage object which summarizes the records.
+    """
+    from_email = os.environ.get('MY_GMAIL_ADDRESS','')
+    to = from_email
+    
+    #Prepare context of email
+    subject='CCBC Library - Summary of transaction check'
+    plaintext = get_template('ccbclib/email_summary.txt')
+    htmly     = get_template('ccbclib/email_summary.html')
+        
+    context_dict = Context({
+                            'time':time,
+                            'item_notice':item_notice,
+                            'email_sent':email_sent,
+                            'sms_sent':sms_sent,
                             })
     
     text_content = plaintext.render(context_dict)

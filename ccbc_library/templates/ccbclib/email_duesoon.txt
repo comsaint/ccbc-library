@@ -2,7 +2,7 @@ Dear {{ name }},
 
   	  This is a notice to remind you that the book "{{ title }}" will be due on {{ due_date }}.
   	  
-  	  Please remember to return it to the CCBC Library before due date.
+  	  Please remember to return it to the CCBC Library before due date, or if applicable, renew it.
   	  
   	  If you have already returned this book, please disregard this message.
   	  

@@ -1,0 +1,4 @@
+Compiled on {{ time }}:
+{{ item_notice }} items needed to be notify.
+{{ email_sent }} emails were sent.
+{{ sms_sent }} SMS were sent.
